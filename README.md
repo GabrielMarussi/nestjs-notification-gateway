@@ -1,98 +1,91 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Notification Gateway 🚀
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+_🇧🇷 [Ler em Português](README-PTBR.md)_
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+[![NestJS](https://img.shields.io/badge/framework-NestJS-E0234E?logo=nestjs)](https://nestjs.com/)
+[![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Jest](https://img.shields.io/badge/testing-Jest-C21325?logo=jest)](https://jestjs.io/)
 
-## Description
+A provider-agnostic notification service built with **NestJS**. This project demonstrates high-level software engineering patterns to decouple business logic from external communication providers (Email, SMS, etc.).
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🎯 Architectural Goal
 
-## Project setup
+The primary goal of this gateway is to adhere strictly to the **SOLID** principles, specifically the **Open/Closed Principle**. Adding a new notification provider (e.g., WhatsApp, Push, Slack) requires **zero changes** to the existing Controllers or Core Logic.
+
+## 🏗️ Design Patterns Implemented
+
+### 1. Strategy Pattern
+
+All notification methods implement the `INotificationStrategy` interface. This ensures a consistent contract across the application, allowing the system to treat all providers polymorphically.
+
+### 2. Factory Pattern
+
+The `NotificationFactory` centralizes the instantiation logic. It resolves the correct strategy at runtime based on the request type, abstracting the complexity away from the REST layer.
+
+### 3. Dependency Injection (DI)
+
+Leverages NestJS's IoC container to manage the lifecycle of strategies and inject them into the Factory, ensuring the system is modular and highly testable.
+
+## 🛠️ Tech Stack
+
+- **Framework:** NestJS (Node.js)
+- **Language:** TypeScript
+- **Validation:** Class-validator & Class-transformer
+- **Testing:** Jest (Unit & E2E)
+- **API Client:** Supertest
+
+## 🚦 Getting Started
+
+### Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+### Running the app
 
 ```bash
 # development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev
 ```
 
-## Run tests
+### Testing
 
 ```bash
 # unit tests
-$ npm run test
+npm run test
 
 # e2e tests
-$ npm run test:e2e
+npm run test:e2e
 
 # test coverage
-$ npm run test:cov
+npm run test:cov
 ```
 
-## Deployment
+## 🧪 API Usage
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+**Endpoint:** `POST /notifications`
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+**Payload:**
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```json
+{
+  "type": "email",
+  "to": "gabriel@mukai.com",
+  "message": "Hello from NestJS Gateway!"
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🚀 Future Improvements (Roadmap)
 
-## Resources
+As a **Principal Engineer**, I've designed this architecture to be ready for the next scale levels:
 
-Check out a few resources that may come in handy when working with NestJS:
+1.  **Asynchronous Processing (BullMQ/Redis):** Offload notification sending to background workers to prevent API latency.
+2.  **Resilience Patterns:** Implement **Circuit Breaker** and **Retry Logic** (using `rxjs` or `backoff`) for external provider failures.
+3.  **Persistence Layer:** Add a database (PostgreSQL/MongoDB) to track notification status and history.
+4.  **Provider Failover:** Automatically switch to a secondary provider if the primary one is down.
+5.  **Template Engine:** Integrate with Handlebars or EJS to support rich HTML emails.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Developed by [Gabriel Mukai](https://github.com/GabrielMarussi)
